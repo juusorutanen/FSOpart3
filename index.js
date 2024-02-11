@@ -30,6 +30,13 @@ app.get('/api/persons', (request,response)=> {
     response.json(persons)
   })
 
+// calculate how many people are in the persons array
+app.get('/api/info', (request,response)=> {
+    let amountOfPersons = persons.length
+    response.send(`<h1>Phonebook has info for ${amountOfPersons} people</h1>`)
+    
+  })
+
 const PORT = 3001
 app.listen(PORT, () => {
 console.log(`server running on port ${PORT}`)
