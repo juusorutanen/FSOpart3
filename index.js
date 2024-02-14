@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json())
+
+
 let persons = [
   {
     id: 1,
@@ -49,15 +52,38 @@ app.get("/api/persons/:id", (request, response) => {
 
 // delete persons phonenumber
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find((person) => person.id === id);
-    if (person) {
-        person.number = "";
-    } else {
-        response.status(404).end();
-    }
-  })
+app.delete("/api/persons/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const person = persons.find((person) => person.id === id);
+  if (person) {
+    person.number = "";
+  } else {
+    response.status(404).end();
+  }
+});
+
+// generate a new id that is always different
+
+const generateId = () => {
+  const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+  return maxId + 1;
+};
+
+// add new person
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+  
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(person);
+
+  response.json(person);
+});
 
 const PORT = 3001;
 app.listen(PORT, () => {
