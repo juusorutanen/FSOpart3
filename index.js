@@ -1,8 +1,7 @@
 const express = require("express");
 const app = express();
 
-app.use(express.json())
-
+app.use(express.json());
 
 let persons = [
   {
@@ -71,9 +70,23 @@ const generateId = () => {
 
 // add new person
 
-app.post('/api/persons', (request, response) => {
-  const body = request.body
-  
+app.post("/api/persons", (request, response) => {
+  const body = request.body;
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: !body.name ? "name missing" : "number missing",
+    });
+  }
+
+  const personExists = persons.find((person) => person.name === body.name);
+
+  if (personExists) {
+    return response.status(400).json({
+      error: "name already exists",
+    });
+  }
+
   const person = {
     name: body.name,
     number: body.number,
